@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: DockerFile
+    container_name: dewtech-app
+    restart: always
+    working_dir: /var/www/
+    volumes:
+      - ../src:/var/www/
+
+  nginx:
+    image: nginx:1.25.1-alpine-slim
+    container_name: dewtech-nginx
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - ../src:/var/www
+      - ./nginx:/etc/nginx/conf.d
+  db:
+    image: postgres:latest
+    container_name: dewtech-db
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db:/var/lib/postgresql/data
